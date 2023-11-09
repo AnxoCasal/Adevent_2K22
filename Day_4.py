@@ -1,4 +1,4 @@
-with open('C:\\\\Users\\Anxo\\Documents\\python\\Adevent\\camps.txt') as file:
+with open('camps.txt') as file:
     lines = file.readlines()
     
 cont = 0
@@ -11,7 +11,6 @@ for line in lines:
     
     for elf in pair:
         camp_4_elf.append(elf.split("-"))
-        camp_4_elf
         
     for element in camp_4_elf:
         element[0] = int(element[0])
