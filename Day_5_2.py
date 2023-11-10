@@ -38,7 +38,7 @@ for comand in comands:
     
     aux = len(containers[comand[2]-1])
     
-    containers[comand[2]-1] = containers[comand[2]-1] + containers[comand[1]-1][len(containers[comand[1]-1])-comand[0]:][::-1]
+    containers[comand[2]-1] = containers[comand[2]-1] + containers[comand[1]-1][len(containers[comand[1]-1])-comand[0]:]
     
     aux2 = len(containers[comand[2]-1])
     aux3 = aux2 - aux
