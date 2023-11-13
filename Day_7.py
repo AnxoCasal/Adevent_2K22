@@ -2,25 +2,42 @@ class directory:
     name = ""
     simple_size = 0
     real_size = 0
-    children = []
+    sons = []
     
     def __init__(self, name):
         self.name = name
+        self.sons = self.sons.copy()
         
     def add_file(self, size):
         self.simple_size += size
         
     def add_children(self, children):
-        self.children.append(children)
+        self.sons.append(children)
+
+def calc_dir_size(carpeta):
+    size = carpeta.simple_size
+    for next in carpeta.sons:
+        size += calc_dir_size(next)
+    print(size)
+    return size
+
+def serch_name(nombre):
+    for box in directories:
+        if box.name == nombre:
+            nombre += "."
+            serch_name(nombre)
         
-with open('C:\\\\Users\\Anxo\\Documents\\python\\Adevent\\directories.txt') as file:
+    return nombre
+        
+    
+        
+with open('directories.txt') as file:
     lines = file.readlines()
 
-actual_directory = directory(lines[0][5:])
+actual_directory = directory((lines[0][5:]).strip())
 directories = [actual_directory]
 
 for line in lines[1:]:
-    print(lines.index(line))
     line = line.strip()
     
     if line.startswith("$ cd"):
@@ -30,7 +47,7 @@ for line in lines[1:]:
             
         
     if line.startswith("dir"):
-        new_dir = directory(line[4:])
+        new_dir = directory(serch_name(line[4:]))
         directories.append(new_dir)
         actual_directory.add_children(new_dir)
         
@@ -43,5 +60,13 @@ for line in lines[1:]:
                 break
         actual_directory.add_file(int(size))
         
-#for directory in directories:
-#    print(len(directory.children))
+super_size = 0
+
+for dire in directories:
+    aux = calc_dir_size(dire)
+    if aux <= 10000:
+        super_size += aux
+        
+print(aux)
+
+# 209116 is low
