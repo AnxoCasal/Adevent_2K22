@@ -37,5 +37,3 @@ for size in sizes:
         super_size += size
         
 print(super_size)
-
-# 1565323
