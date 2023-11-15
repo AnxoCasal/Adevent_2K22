@@ -18,7 +18,7 @@ def calc_dir_size(carpeta):
     size = carpeta.simple_size
     for next in carpeta.sons:
         size += calc_dir_size(next)
-    print(size)
+    print(carpeta.name + " - " + str(size)+ str(carpeta.simple_size))
     return size
 
 def serch_name(nombre):
@@ -67,6 +67,6 @@ for dire in directories:
     if aux <= 10000:
         super_size += aux
         
-print(aux)
+print(super_size)
 
 # 209116 is low
