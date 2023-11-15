@@ -4,52 +4,61 @@ class directory:
     real_size = 0
     sons = []
     
-    def __init__(self, name):
-        self.name = name
-        self.sons = self.sons.copy()
+    def __init__(self, dirname):
+        self.name = dirname
+        self.sons = []
         
-    def add_file(self, size):
-        self.simple_size += size
+    def add_file(self, file_size):
+        self.simple_size += file_size
         
     def add_children(self, children):
         self.sons.append(children)
+        
+def fixname(name, listdir):
+    flag = True
+    while flag:
+        flag = False
+        for aux in listdir:
+            if aux.name == name:
+                name = name + "+"
+                flag = True
+                break
+    return(name)
 
 def calc_dir_size(carpeta):
     size = carpeta.simple_size
     for next in carpeta.sons:
         size += calc_dir_size(next)
-    print(carpeta.name + " - " + str(size)+ str(carpeta.simple_size))
     return size
+                
 
-def serch_name(nombre):
-    for box in directories:
-        if box.name == nombre:
-            nombre += "."
-            serch_name(nombre)
-        
-    return nombre
-        
-    
-        
 with open('directories.txt') as file:
     lines = file.readlines()
 
-actual_directory = directory((lines[0][5:]).strip())
-directories = [actual_directory]
+for i in range(len(lines)):
+    lines[i] = lines[i].strip()
+
+directories = []
+actual_directory = directory(lines[0][5:])
+directories.append(actual_directory)
+
 
 for line in lines[1:]:
-    line = line.strip()
     
-    if line.startswith("$ cd"):
-        for aux in directories:
-            if aux.name == line[5:]:
-                actual_directory = aux
-            
-        
+    if line.startswith("$ cd") and not line.startswith("$ cd ."):
+        n = len(directories)
+        for i in range(len(directories)):
+            n -= 1
+            if directories[n].name.startswith(line[5:]):
+                actual_directory = directories[n]
+                break
+    
     if line.startswith("dir"):
-        new_dir = directory(serch_name(line[4:]))
+        nombre = fixname(line[4:], directories)
+        new_dir = directory(nombre)
         directories.append(new_dir)
         actual_directory.add_children(new_dir)
+        print(actual_directory.name)
         
     if line[0].isdigit():
         size = ""
@@ -60,13 +69,11 @@ for line in lines[1:]:
                 break
         actual_directory.add_file(int(size))
         
-super_size = 0
+result = 0
 
 for dire in directories:
     aux = calc_dir_size(dire)
-    if aux <= 10000:
-        super_size += aux
+    if aux <= 100000:
+        result += aux
         
-print(super_size)
-
-# 209116 is low
+print(result)
