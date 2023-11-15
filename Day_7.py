@@ -1,79 +1,41 @@
-class directory:
-    name = ""
-    simple_size = 0
-    real_size = 0
-    sons = []
+i=-1
+
+def nuevo_dir():
+    global i
+    this_size = 0
     
-    def __init__(self, dirname):
-        self.name = dirname
-        self.sons = []
-        
-    def add_file(self, file_size):
-        self.simple_size += file_size
-        
-    def add_children(self, children):
-        self.sons.append(children)
-        
-def fixname(name, listdir):
-    flag = True
-    while flag:
-        flag = False
-        for aux in listdir:
-            if aux.name == name:
-                name = name + "+"
-                flag = True
-                break
-    return(name)
-
-def calc_dir_size(carpeta):
-    size = carpeta.simple_size
-    for next in carpeta.sons:
-        size += calc_dir_size(next)
-    return size
-                
-
-with open('directories.txt') as file:
+    while i < len(lines)-1:
+        i+=1
+        if lines[i].startswith("$ cd .."):
+            sizes.append(this_size)
+            return this_size
+        elif lines[i].startswith("$ cd"):
+            var = nuevo_dir()
+            this_size += var
+        elif lines[i][0].isdigit():
+            number = ""
+            for char in lines[i]:
+                if char.isdigit():
+                    number+=char
+            this_size += int(number)
+    
+    sizes.append(this_size)
+    return this_size
+    
+     
+with open('C:\\\\Users\\Anxo\\Documents\\python\\Adevent\\directories.txt') as file:
     lines = file.readlines()
 
-for i in range(len(lines)):
-    lines[i] = lines[i].strip()
+sizes = []
 
-directories = []
-actual_directory = directory(lines[0][5:])
-directories.append(actual_directory)
+nuevo_dir()
 
+super_size=0
 
-for line in lines[1:]:
-    
-    if line.startswith("$ cd") and not line.startswith("$ cd ."):
-        n = len(directories)
-        for i in range(len(directories)):
-            n -= 1
-            if directories[n].name.startswith(line[5:]):
-                actual_directory = directories[n]
-                break
-    
-    if line.startswith("dir"):
-        nombre = fixname(line[4:], directories)
-        new_dir = directory(nombre)
-        directories.append(new_dir)
-        actual_directory.add_children(new_dir)
-        print(actual_directory.name)
+for size in sizes:
+    if size < 100000:
+        super_size += size
         
-    if line[0].isdigit():
-        size = ""
-        for char in line:
-            if char.isdigit():
-                size += char
-            else:
-                break
-        actual_directory.add_file(int(size))
-        
-result = 0
+print(super_size)
 
-for dire in directories:
-    aux = calc_dir_size(dire)
-    if aux <= 100000:
-        result += aux
-        
-print(result)
+# 1565323
