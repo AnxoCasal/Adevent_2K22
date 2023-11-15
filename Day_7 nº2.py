@@ -1,19 +1,32 @@
-with open('directories.txt') as file:
-    lines = file.readlines()
+class directory:
+    name = ""
+    simple_size = 0
+    real_size = 0
+    sons = []
     
-total_dirs = []    
+    def __init__(self, dirname):
+        self.name = dirname
+        self.sons = []
+        
+    def add_file(self, file_size):
+        self.simple_size += file_size
+        
+    def add_children(self, children):
+        self.sons.append(children)
 
-for line in lines:
-    if line.startswith("$ cd .."):
-    elif line.startswith("$ cd"):
-        total_dirs.append(0)
-    elif line.startswith("$ ls"):
-    elif line.startswith("dir"):
-    elif line[0].isdigit():
+with open('C:\\\\Users\\Anxo\\Documents\\python\\Adevent\\directories.txt') as file:
+    lines = file.readlines()
 
-def calc_dir_size(carpeta):
-    print(carpeta.name)
-    size = carpeta.simple_size
-    for next in carpeta.sons:
-        size += calc_dir_size(next)
-    return size
+directories = []
+actual_directory = directory(lines[0][5:])
+directories.append(actual_directory)
+
+for line in lines[1:]:
+    
+    if line.startswith("$ cd") and not line.startswith("$ cd ."):
+        for i in directories:
+            if i.name == line[5:]:
+                actual_directory = i
+    
+    if line.startswith("dir"):
+        new_dir = directory(line[4:])
