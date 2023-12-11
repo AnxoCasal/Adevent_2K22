@@ -1,6 +1,5 @@
 noop
 noop
-noop
 addx 6
 addx -1
 noop
