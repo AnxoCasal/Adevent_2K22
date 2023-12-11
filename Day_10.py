@@ -5,22 +5,28 @@ cycle = 0
 x = 1
 mid_cycle = False
 values = []
-i = 0
-last_value = 0
+i = -1
 
 while True:
-    cycle += 1
-    if not mid_cycle:
-        i+=1
+    i+=1
     
-    if cycle == 20 or cycle == 60 or cycle == 100 or cycle == 140 or cycle == 180 or cycle == 220:
-        values.append(cycle * x)
+    cycle+=1
     
     if mid_cycle:
+        i-=1
         mid_cycle = False
-        x += last_value
-    elif lines[i].strip() != "noop":
-        last_value = int(lines[i][4:].strip())
+    elif lines[i] != "noop\n":
+        lines[i] = lines[i].replace("addx ","")
+        x += int(lines[i])
         mid_cycle = True
+        
+    if cycle == 20 or cycle == 60 or cycle == 100 or cycle == 140 or cycle == 180 or cycle == 220:
+        print(cycle)
+        values.append(cycle * x)
     
     if i == len(lines)-1: break
+          
+print(sum(values))
+
+#17380 > ?
+#15180 > ?
