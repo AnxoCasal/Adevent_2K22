@@ -5,7 +5,7 @@ cycle = 0
 x = 1
 mid_cycle = False
 values = []
-i = 0
+i = -1
 last_value = 0
 
 while True:
@@ -15,7 +15,7 @@ while True:
     
     if cycle == 20 or cycle == 60 or cycle == 100 or cycle == 140 or cycle == 180 or cycle == 220:
         values.append(cycle * x)
-    
+            
     if mid_cycle:
         mid_cycle = False
         x += last_value
