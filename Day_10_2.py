@@ -5,7 +5,7 @@ cycle = 0
 x = 1
 mid_cycle = False
 screen = [[] for _ in range(6)]
-i = 0
+i = -1
     
 if cycle-(40*(cycle//40)) == x or cycle-(40*(cycle//40)) == (x+1) or cycle-(40*(cycle//40)) == (x-1):
     screen[cycle//40].append("#") 
