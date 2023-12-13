@@ -1,4 +1,4 @@
-with open('C:\\\\Users\\Anxo\\Documents\\python\\Adevent\\cheats.txt') as file:
+with open('.\\inputs\\cheats.txt') as file:
     lines = file.readlines()
     
 score = 0

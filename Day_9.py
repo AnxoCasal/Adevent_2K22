@@ -31,7 +31,7 @@ def check_history(t,history):
         history.append(t.copy())
         return history
 
-with open('rope.txt') as file:
+with open('.\\inputs\\rope.txt') as file:
     lines = file.readlines()
     
 history = [[0,0]]

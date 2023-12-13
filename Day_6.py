@@ -1,4 +1,4 @@
-with open('C:\\\\Users\\Anxo\\Documents\\python\\Adevent\\signal.txt') as file:
+with open('.\\inputs\\signal.txt') as file:
     lines = file.readlines()
 
 signal = lines[0]

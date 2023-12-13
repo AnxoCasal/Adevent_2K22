@@ -1,4 +1,4 @@
-with open('C:\\\\Users\\Anxo\\Documents\\python\\Adevent\\inv.txt') as file:
+with open('.\\inputs\\inv.txt') as file:
     lines = file.readlines()
     
 elfs = []

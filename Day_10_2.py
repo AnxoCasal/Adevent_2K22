@@ -1,4 +1,4 @@
-with open("clock_program.txt") as file:
+with open(".\\inputs\\clock_program.txt") as file:
     lines = file.readlines()
     
 cycle = 0

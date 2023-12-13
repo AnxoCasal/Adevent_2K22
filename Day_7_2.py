@@ -23,7 +23,7 @@ def nuevo_dir():
     return this_size
     
      
-with open('C:\\\\Users\\Anxo\\Documents\\python\\Adevent\\directories.txt') as file:
+with open('.\\inputs\\directories.txt') as file:
     lines = file.readlines()
 
 sizes = []

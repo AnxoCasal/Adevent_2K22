@@ -1,4 +1,4 @@
-with open('camps.txt') as file:
+with open('.\\inputs\\camps.txt') as file:
     lines = file.readlines()
     
 cont = 0

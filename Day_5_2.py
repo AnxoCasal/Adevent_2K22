@@ -1,4 +1,4 @@
-with open('C:\\\\Users\\Anxo\\Documents\\python\\Adevent\\crates.txt') as file:
+with open('.\\inputs\\crates.txt') as file:
     lines = file.readlines()
     
 crates = lines[:8]

@@ -1,4 +1,4 @@
-with open('C:\\\\Users\\Anxo\\Documents\\python\\Adevent\\camps.txt') as file:
+with open('.\\inputs\\camps.txt') as file:
     lines = file.readlines()
     
 cont = 0

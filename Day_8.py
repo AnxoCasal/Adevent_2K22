@@ -5,7 +5,7 @@ def visibility_checker(tree,side):
     
     return True
 
-with open('C:\\\\Users\\Anxo\\Documents\\python\\Adevent\\trees.txt') as file:
+with open('.\\inputs\\trees.txt') as file:
     lines = file.readlines()
     
 yaxis = []

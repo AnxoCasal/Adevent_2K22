@@ -1,4 +1,4 @@
-with open ("C:\\Users\\anxo.casalrodriguez\\Documents\\Progamación\\Adevent_2K22\\monkey_business.txt") as file:
+with open (".\\inputs\\monkey_business.txt") as file:
     lines = file.readlines()
 
 monkeys = []

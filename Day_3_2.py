@@ -1,6 +1,6 @@
 import string
 
-with open('C:\\\\Users\\Anxo\\Documents\\python\\Adevent\\backpacks.txt') as file:
+with open('.\\inputs\\backpacks.txt') as file:
     lines = file.readlines()
 
 score = 0
