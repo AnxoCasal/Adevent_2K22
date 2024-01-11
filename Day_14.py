@@ -10,7 +10,7 @@ def get_limits(xs, ys):
 def showMap(mapa):
     
     for line in mapa:
-        print(line)
+        print("".join(line))
     
 with open(".\\inputs\\cave.txt") as file:
     lines = [line.strip() for line in file.readlines()]
@@ -20,24 +20,38 @@ y_coords = [[(int(coord.split(",")[1])) for coord in line.split(" -> ")] for lin
 
 min_x,min_y,max_x,max_y = get_limits(x_coords, y_coords)
 
-x_coords = [[(int(coord.split(",")[0])-min_x) for coord in line.split(" -> ")] for line in lines]
-y_coords = [[(int(coord.split(",")[1])-min_y) for coord in line.split(" -> ")] for line in lines]
+x_coords = [[num-min_x for num in line] for line in x_coords]
+y_coords = [[num-min_y for num in line] for line in y_coords]
 
-min_x,min_y,max_x,max_y = get_limits(x_coords, y_coords)
+_,_,max_x,max_y = get_limits(x_coords, y_coords)
 
-mapa = [["." for _ in range(max_x)] for _ in range(max_y)]
+mapa = [["." for _ in range(max_x+1)] for _ in range(max_y+1)]
+
+mapa[0][500-min_x] = "+"
 
 for i in range(len(x_coords)):
     for j in range(len(x_coords[i])-1):
-        
-        if abs(x_coords[i][j]-1 - x_coords[i][j+1]-1) != 0:
-            for k in range(abs(x_coords[i][j]-1 - x_coords[i][j+1]-1)+1):
-                print(k)
-                mapa[y_coords[i][j]-1][x_coords[i][j+k]-1] = "#"
+                
+        if x_coords[i][j] - x_coords[i][j+1] != 0:
+            if x_coords[i][j] - x_coords[i][j+1] < 0:
+                for k in range(x_coords[i][j] - x_coords[i][j+1],-1):
+                    mapa[y_coords[i][j]][x_coords[i][j]+k] = "#"
+                    
+            else:
+                range(x_coords[i][j] - x_coords[i][j+1])
+                for k in range(x_coords[i][j] - x_coords[i][j+1]):
+                    print(x_coords[i][j])
+                    print(k)
+                    mapa[y_coords[i][j]][x_coords[i][j]+k] = "#"
+            
         else:
-            for k in range(abs(y_coords[i][j]-1 - y_coords[i][j+1]-1)+1):
-                print(k)
-                mapa[y_coords[i][j+k]-1][x_coords[i][j]-1] = "#"
-        #mapa[y_coords[i][j]-1][x_coords[i][j]-1] = "#"
+            
+            if y_coords[i][j] - y_coords[i][j+1] < 0:
+                for k in range(y_coords[i][j] - y_coords[i][j+1],-1):
+                    mapa[y_coords[i][j]+k][x_coords[i][j]] = "#"
+                    
+            else:
+                for k in range(y_coords[i][j] - y_coords[i][j+1]):
+                    mapa[y_coords[i][j]+k][x_coords[i][j]] = "#"
         
 showMap(mapa)
