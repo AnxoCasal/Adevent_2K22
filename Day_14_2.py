@@ -9,7 +9,7 @@ def showMap(mapa):
     
     with open(".\\outputs\\cave.txt","w") as file:
         for line in mapa:
-            file.write("".join(line[400:])+"\n")
+            file.write("".join(line)+"\n")
             
 def getAllValues(val1,val2):
     
@@ -39,7 +39,11 @@ def getAllValues(val1,val2):
     return values
 
 def generateSand():
-    mapa[0][500] = "0"
+    
+    if mapa[0][500] == "0":
+        return "end"
+    else:
+        mapa[0][500] = "0"
     
 def moveSand(y,x):
     
@@ -74,6 +78,8 @@ y_coords = [[(int(coord.split(",")[1])) for coord in line.split(" -> ")] for lin
 max_x,max_y = get_limits(x_coords, y_coords)
 
 mapa = [["." for _ in range(max_x*2)] for _ in range(max_y+1)]
+mapa.append(["." for _ in range(max_x*2)])
+mapa.append(["#" for _ in range(max_x*2)])
 
 mapa[0][500] = "+"
 
@@ -89,8 +95,9 @@ response = None
 cont = 0
 
 while response != "end":
-    generateSand()
-    response = moveSand(0,500)
+    response = generateSand()
+    if response != "end":
+        response = moveSand(0,500)
     if response != "end":
         cont += 1
     
