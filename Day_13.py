@@ -1,19 +1,3 @@
-"""
-Obtenemos los datos
-Los alacenamos en una lista de pares
-Recorremos la lista haciendo la siguiente comprobaciones:
-    primeramente comprobamos si ambos contienen la misma cantidad de elementos
-        en caso de que el primer elemento contenga mas que el primero despachamos el par
-        
-        el lado derecho tenga mas que el izquierdo despachamos el par y aumentamos el contador
-        
-        en caso de que contenga la misma cantidad proseguimos
-            comprobamos elemento por elemento realizando este mismo proceso de forma recursiva
-            
-                cuando lleguemos al nivel de los integers debemos empezar a comparlos como numeros, si en algun momento X > Y, despachamos el par si X < Y, lo despachamos y aumentamos el contador 
-                
-                si las listas son identidas = ?
-"""
 def getPackages(path):
 
     with open(path) as file:
@@ -24,22 +8,14 @@ def getPackages(path):
 def unpack(pair):
     return pair[1:][::-1][1:][::-1]
 
-def firs_element_type(element):
-    
-    if len(element) == 0:
-        return "empty"
-    elif element[0] == "[":
-        return "list"
-    else:
-        return "number"
-
 def get_elements(element):
     
     items = element.split(",")
     
     while True:
         for i in range(len(items)):
-            if "[" in items[i] and "]" not in items[i]:
+            cont = items[i].count("[") - items[i].count("]")
+            if cont > 0:
                 items = concat_until_end(items,i)
                 break
             
@@ -50,7 +26,7 @@ def get_elements(element):
 
 def concat_until_end(items,i):
     
-    cont = 1
+    cont = items[i].count("[") - items[i].count("]")
     
     while cont > 0:
         items[i] = items[i] +","+ items.pop(i+1)
@@ -59,16 +35,16 @@ def concat_until_end(items,i):
     return items
 
 def compare(top,bot):
+      
+        if checkEmpty(top,bot) != None:
+            return checkEmpty(top,bot)
     
-        for i in range(len(top)):
+        for i in range(len(top)+1):
             
             if i >= len(top):
                 return True
             elif i >= len(bot):
                 return False
-                
-            print("top:",top[i])
-            print("bot:",bot[i])
             
             if top[i].isnumeric() and bot[i].isnumeric():
                 
@@ -79,41 +55,59 @@ def compare(top,bot):
                 
             elif top[i].isnumeric() and not bot[i].isnumeric():
                 
-                bitems = unpack(bot[i])
-                aitems = get_elements(top[i])
-                bitems = get_elements(bitems)
+                bot_items = unpack(bot[i])
+                top_items = get_elements(top[i])
+                bot_items = get_elements(bot_items)
                 
-                return compare(aitems,bitems)
+                res = compare(top_items,bot_items)
+                
+                if res != None:
+                    return res
                 
             elif not top[i].isnumeric() and bot[i].isnumeric():
                 
-                aitems = unpack(top[i])
-                aitems = get_elements(aitems)
-                bitems = get_elements(bot[i])
+                top_items = unpack(top[i])
+                top_items = get_elements(top_items)
+                bot_items = get_elements(bot[i])
                 
-                return compare(aitems,bitems)
+                res = compare(top_items,bot_items)
+                
+                if res != None:
+                    return res
                 
             elif not top[i].isnumeric() and not bot[i].isnumeric():
                 
-                aitems = unpack(top[i])
-                bitems = unpack(bot[i])
-                aitems = get_elements(aitems)
-                bitems = get_elements(bitems)
+                top_items = unpack(top[i])
+                bot_items = unpack(bot[i])
+                top_items = get_elements(top_items)
+                bot_items = get_elements(bot_items)
                 
-                return compare(aitems,bitems)
+                res = compare(top_items,bot_items)
+                
+                if res != None:
+                    return res
 
-packages = getPackages(".\\inputs\\distress_signal.txt")
+def checkEmpty(top,bot):
+    
+    if top[0] == "":
+        return True
+    elif bot[0] == "":
+        return False    
+
+packages = getPackages(".\\inputs\\distress_signal_test.txt")
 cont = 0   
     
 for index,pair in enumerate(packages):
     
-    top = unpack(pair[0])
-    bot = unpack(pair[1])
+    top_elem = unpack(pair[0])
+    bot_elem = unpack(pair[1])
     
-    top_elem = get_elements(top)
-    bot_elem = get_elements(bot)
+    top_elem = get_elements(top_elem)
+    bot_elem = get_elements(bot_elem)
     
-    print(top_elem,bot_elem)
-    
-    print(compare(top_elem,bot_elem))
-    input()
+    if compare(top_elem,bot_elem): 
+        cont += (index+1)
+        
+print(cont)
+
+#4875 < ? < 5539
