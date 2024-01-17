@@ -11,49 +11,47 @@ def haversineManhattan(coord1, coord2):
     
     return abs(coord1[0] - coord2[0]) + abs(coord1[1] - coord2[1])
 
-def getNeighbors(points):
-    
-    neighbors = []
-    
-    for point in points:
-        neighbors += [(point[0]-1,point[1]),(point[0]+1,point[1]),(point[0],point[1]-1),(point[0],point[1]+1)]
-        
-    return list(set(neighbors))
+def getAreaCovered(sensor, target_line, radio_area):
 
-def getAreaCovered(sensor, radio_area):
+    distance = abs(sensor[1] - target_line)
+    target_line_cover = radio_area - distance
     
-    area = []
-    area += getNeighbors(sensor)
+    area_covered = []
     
-    for i in range(radio_area-1):
+    if target_line_cover > -1:
         
-        area += getNeighbors(area)
-        
-    return list(set(area))
+        area_covered += [(sensor[0],target_line)]
+    
+        for i in range(target_line_cover+1):
+            
+            area_covered += [(sensor[0]+i,target_line),(sensor[0]-i,target_line)]
+            
+    return area_covered
 
-def getScannedArea():
+def getScannedArea(sensors, beacons, target_line):
     
     areas = []
 
     for i in range(len(sensors)):
 
         radio_area = haversineManhattan(sensors[i],beacons[i])
-        areas += getAreaCovered([sensors[i]], radio_area)
+        areas += getAreaCovered(sensors[i], target_line, radio_area)
         
-    return areas
-        
-print()
-sensors,beacons = getSensorsAndBeacons(".\\inputs\\sensors_and_beacons_test.txt")
-scannedArea = getScannedArea()
+    return set(areas)
 
-taregetLine = []
-
-for point in scannedArea:
+def clean_from_beacons(scanned_area, beacons):
     
-    if point[1] == 10:
-        taregetLine.append(point)
-        
-print(sorted(taregetLine))
-print(len(taregetLine))
+    for beac in beacons:
+        if beac in scanned_area:
+            scanned_area.remove(beac)
+            
+    return scanned_area
 
-print()
+def main(target):
+    
+    sensors,beacons = getSensorsAndBeacons(".\\inputs\\sensors_and_beacons.txt")
+    scannedArea = getScannedArea(sensors,beacons,target)
+
+    return len(clean_from_beacons(scannedArea,beacons))
+
+print(main(2000000))
