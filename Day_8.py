@@ -1,57 +1,70 @@
-def visibility_checker(tree,side):
-    for num in side:
-        if num >= tree:
+def get_trees(path):
+    
+    with open(path) as file:
+        trees = [[tree for tree in line.strip()] for line in file.readlines()]
+
+    return trees
+
+def check_tree(point, trees):
+    
+    if check_south(point, trees) or check_north(point, trees) or check_east(point, trees) or check_west(point, trees):
+        return True
+    
+def check_north(point, trees):
+    
+    y = point[0]
+    x = point[1]
+    
+    for i in range(len(trees)):
+        if i == y:
+            return True
+        elif trees[i][x] >= trees[y][x]:
             return False
     
-    return True
-
-with open('.\\inputs\\trees.txt') as file:
-    lines = file.readlines()
+def check_south(point, trees):
     
-yaxis = []
-xaxis = []
-cont = 0
-        
-for i in range(len(lines)):
-    lines[i] = lines[i].strip()
+    y = point[0]
+    x = point[1]
     
-for i in range(len(lines[0])):
-    yaxis.append([])
-    for line in lines:
-        yaxis[i].append(int(line[i]))
+    for i in range(len(trees)-1,-1,-1):
+        if i == y:
+            return True
+        elif trees[i][x] >= trees[y][x]:
+            return False
+        
+def check_east(point, trees):
     
-for i in range(len(yaxis[0])):
-    xaxis.append([])
-    for line in yaxis:
-        xaxis[i].append(int(line[i]))
-        
-##visibility_map =[]
+    y = point[0]
+    x = point[1]
     
-for i in range(len(xaxis[0])):
-##    visibility_map.append("")
-    for j in range(len(xaxis[0])):
-        target = xaxis[i][j]
-        visible = False
+    for i in range(len(trees[y])):
+        if i == x:
+            return True
+        elif trees[y][i] >= trees[y][x]:
+            return False
         
-        sides = []
-        
-        sides.append(xaxis[i][:j])
-        sides.append(xaxis[i][j+1:])
-        sides.append(yaxis[j][:i])
-        sides.append(yaxis[j][i+1:])
-        
-        for side in sides:
-            visible = visibility_checker(target,side)
-            if visible:
-                break
-        
-        if visible:
-            cont+=1
-##            visibility_map[len(visibility_map)-1] += "1"
-##        else:
-##            visibility_map[len(visibility_map)-1] += "0"
-##
-##for line in visibility_map:
-    print(line)
-
-print(cont)
+def check_west(point, trees):
+    
+    y = point[0]
+    x = point[1]
+    
+    for i in range(len(trees[y])-1,-1,-1):
+        if i == x:
+            return True
+        elif trees[y][i] >= trees[y][x]:
+            return False
+            
+def main():
+    
+    trees = get_trees(".\\inputs\\trees.txt")
+    
+    cont = 0
+    
+    for i in range(len(trees)):
+        for j in range(len(trees[i])):
+            if check_tree((i,j),trees):
+                cont += 1
+                
+    print(cont)
+    
+main()
