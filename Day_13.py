@@ -94,7 +94,7 @@ def checkEmpty(top,bot):
     elif bot[0] == "":
         return False    
 
-packages = getPackages(".\\inputs\\distress_signal_test.txt")
+packages = getPackages(".\\inputs\\distress_signal.txt")
 cont = 0   
     
 for index,pair in enumerate(packages):
