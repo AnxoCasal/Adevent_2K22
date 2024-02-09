@@ -68,50 +68,85 @@ def dijkstra(actual, final, valves):
         actual = min(open_nodes, key=obtener_peso)
         open_nodes.remove(actual)
         
+    close_nodes.append(actual)
+        
     return len(get_path(close_nodes))
 
-def move_worth(flow,minutes,moves):
+def descend(deepness):
     
-    return flow * (30-(minutes+moves))
+    deepness -= 1
+    
+    if deepness:
+    
+        get_gain = lambda valve: valve["gain"]
+                
+        valve_aux = valve
+        worth_valves_2 = worth_valves.copy()
+        worth_valves_2.remove(valve_aux)
+        minutes_2 = minutes -distancia
+                
+        for i in range(deepness):
+                    
+            valve_gains_2 = []
+                    
+            for valve_2 in worth_valves_2:
+                
+                distancia_2 = dijkstra(valve_aux,valve_2,valves)
+                gain_2 = (minutes_2 - distancia_2) * valve_2["flow"]
+                        
+                if gain_2 > 0:
+                    valve_gains_2.append({"valve":valve_2,"gain":gain_2})
+                            
+            if valve_gains_2:
+                
+                best = max(valve_gains_2, key=get_gain)
+                gain += best["gain"]
+    
 
-def main():
-    mejor_movimiento = lambda move : move[1]
+def main(deepness = 0):
     
     valves = get_valves(".\\inputs\\valves_test.txt")
+    get_gain = lambda valve: valve["gain"]
     actual = valves[0]
-    working = 0
-    steam_minute = 0
+    minutes = 30
     total = 0
-    
-    for minutes in range(0,31):
-    
-        total += steam_minute
-        
-        if not working:
             
-            worth_valves = [valve for valve in valves if valve["open"] == False and valve["flow"] != 0]
+    worth_valves = [valve for valve in valves if valve["open"] == False and valve["flow"] != 0]
+    
+    while worth_valves:
             
-            if worth_valves:
-                
-                moves_costs = [(valve,move_worth(valve["flow"],minutes,dijkstra(actual,valve,valves))) for valve in worth_valves]
-                [print(move,minutes,dijkstra(actual,move[0],valves)) for move in moves_costs]
-                input()
-                
-                old = actual
-                actual,_ = max(moves_costs, key=mejor_movimiento)
-                
-                working = dijkstra(actual,old,valves)+1
-                
-                print(actual)
+        worth_valves = [valve for valve in valves if valve["open"] == False and valve["flow"] != 0]
+        valve_gains = []
         
-        working -= 1
+        for valve in worth_valves:
+            
+            distancia = dijkstra(actual,valve,valves)
+            
+            gain = (minutes - distancia) * valve["flow"]
+            
+            if minutes > 0:
+                valve_gains.append({"valve":valve,"gain":gain})
         
-        if not working:
-            steam_minute += actual["flow"]
+        if valve_gains:
+            
+            best = max(valve_gains, key=get_gain)
+            
+            
+            distancia = dijkstra(actual,best["valve"],valves)
+                
+            actual = best["valve"]
+            print(actual)
+            print(minutes)
+            print(distancia)
+            print(actual["flow"])
+            gain = (minutes - distancia) * actual["flow"]
+            minutes -= distancia
+            total += gain
             actual["open"] = True
-            
+        
+        else: 
+            break
+    
     print(total)
             
-main()
-
-#1739 > ?
+main(deepness=1)
