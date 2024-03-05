@@ -97,7 +97,7 @@ def checkEmpty(top,bot):
 packages = getPackages(".\\inputs\\distress_signal.txt")
 cont = 0   
     
-for index,pair in enumerate(packages):
+for index,pair in enumerate(packages[::-1]):
     
     top_elem = unpack(pair[0])
     bot_elem = unpack(pair[1])
