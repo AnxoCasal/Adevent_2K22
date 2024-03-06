@@ -4,7 +4,7 @@ def getPackages(path):
 
     with open(path) as file:
         for pairs in file.read().split('\n\n'):
-            packages.append(list(map(eval, pairs.splitlines())))
+            packages.extend(list(map(eval, pairs.splitlines())))
         
     return packages
 
@@ -30,11 +30,18 @@ def compare(left,right):
     
 packages = getPackages(".\\inputs\\distress_signal.txt")
 
-cont = 0
+targets = [[[2]],[[6]]]
+packages.extend(targets)
+indexs = []
  
-for index,pack in enumerate(packages, start=1):
+for t in targets:
     
-    if compare(pack[0],pack[1]):
-       cont += index
-
-print(f"Result: {cont}")
+    win_cont = 1
+    for pack in packages:
+        if compare(pack,t):
+            win_cont+=1
+    indexs.append(win_cont)
+    
+    print(f"Index of {t}:",win_cont)
+    
+print(f"Result: {indexs[0]*indexs[1]}")
