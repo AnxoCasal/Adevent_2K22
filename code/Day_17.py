@@ -1,6 +1,4 @@
 import misc
-import os
-import copy
 
 def paint(tunnel):
     
@@ -16,22 +14,18 @@ def paint(tunnel):
                 floor += "."
         
         print(floor)
+
+def clean_tunnel(tunnel):
+    
+    if tunnel != []:
+        while tunnel[-1] == [0,0,0,0,0,0,0]:
+            tunnel.remove([0,0,0,0,0,0,0])
         
-def clean_tunnel(tunnel, force = False):
-    
-    if force:
-    
-        for l in range(len(tunnel)):
-            if not 2 in tunnel[l]:
-                return tunnel[:l]
-    
-    for l in range(len(tunnel)):
-        if tunnel[l] == [0,0,0,0,0,0,0]:
-            return tunnel[:l]
-    
     return tunnel
         
-def spawn_rock(tunnel, rocks, rock_index):
+def spawn_rock(tunnel, rocks, rock_index, rock_coords):
+    
+    rock_coords = []
     
     tunnel = clean_tunnel(tunnel)
     
@@ -44,89 +38,71 @@ def spawn_rock(tunnel, rocks, rock_index):
         
     for line in rock[::-1]:
         
-        new_line = empty_line.copy()
+        tunnel.append(empty_line.copy())
         
-        for i in range(len(line)):
-            new_line[i+2] = line[i]
-        
-        tunnel.append(new_line)    
+        x = [i for i, x in enumerate(line) if x == 1]
+        y = len(tunnel)-1
+        for i in x:
+            rock_coords.append((i+2,y))
     
-    return tunnel
+    return tunnel,rock_coords
 
-def fall_rock(tunnel):
+def fall_rock(tunnel, rock_coords):
     
-    result = move_rock(tunnel)
+    result, rock_coords = move_rock(tunnel, rock_coords)
     
     if result:
         tunnel = result
-    else:
-        for line in tunnel:
-            if 1 in line:
-                for l in line:
-                    if l == 1:
-                        line[line.index(1)] = 2
-                
-    return tunnel,bool(result)
-
-def move_rock(tunnel):
-    
-    new_tunnel = copy.deepcopy(tunnel)
-    
-    for l in range(len(new_tunnel)):
         
-        if 1 in new_tunnel[l]:
+    else:
+        
+        for coord in rock_coords:
             
-            below = new_tunnel[l-1]
-            indexs = [i for i, x in enumerate(new_tunnel[l]) if x == 1]
-            
-            for i in indexs:
-                if below[i] == 2:
-                    return False
-                else:
-                    below[i] = 1
-                    new_tunnel[l][i] = 0
-            
-    return new_tunnel
+            x = coord[0]
+            y = coord[1]
+            tunnel[y][x] = 2
+                
+    return tunnel,bool(result),rock_coords
 
-def jet_move(tunnel, direction):
+def move_rock(tunnel, rock_coords):
+    
+    new_coords = []
+    
+    for cords in rock_coords:
+        
+        x = cords[0]
+        y = cords[1]
+        
+        if tunnel[y-1][x] == 2 or y-1 == -1:
+            return False, rock_coords
+        else:
+            new_coords.append((x,y-1))
+    
+            
+    return tunnel,new_coords
+
+def jet_move(tunnel, direction, rock_coords):
     
     go_right = direction == ">"
     
-    new_tunnel = copy.deepcopy(tunnel)
+    new_coords = []
+    
+    for cords in rock_coords[::-1]:
         
-    for l in range(len(new_tunnel)):
+        x = cords[0]
+        y = cords[1]
         
-        if 1 in new_tunnel[l]:
-            
-            indexs_1 = [i for i, x in enumerate(new_tunnel[l]) if x == 1]
-            indexs_2 = [i for i, x in enumerate(new_tunnel[l]) if x == 2]
-            
-            if 6 in indexs_1 and go_right or 0 in indexs_1 and not go_right:
-                return tunnel
-            
-            else:
-                if go_right:
-                    
-                    for i in indexs_1[::-1]:
-                        for j in indexs_2:
-                            if i == j-1:
-                                return tunnel
-                        
-                        new_tunnel[l][i] = 0    
-                        new_tunnel[l][i+1] = 1    
-                    
-                else:
-                    
-                    for i in indexs_1:
-                        for j in indexs_2:
-                            if i == j+1:
-                                return tunnel
-                        
-                        new_tunnel[l][i] = 0    
-                        new_tunnel[l][i-1] = 1    
-            
-                    
-    return new_tunnel
+        if go_right: 
+            move = +1 
+        else: 
+            move = -1
+        
+        if go_right and x == 6      or not go_right and x == 0      or tunnel[y][x+move] == 2:
+            return tunnel, rock_coords
+        
+        else:
+            new_coords.append((x+move,y))
+    return tunnel,new_coords
             
 def main(rock_cant, rocks, tunnel, jets):
 
@@ -135,17 +111,19 @@ def main(rock_cant, rocks, tunnel, jets):
     down = False
     rock_index = 0
     jet_index = 0
+    
+    rock_coords = False
 
     while True:
         
         if next_rock:
-            
+        
             if rock_index >= rock_cant: return tunnel
             
             next_rock = False
-            jet = True
+            jet = True            
             
-            tunnel = spawn_rock(tunnel,rocks,rock_index%5)
+            tunnel,rock_coords = spawn_rock(tunnel,rocks,rock_index%5,rock_coords)
             
             rock_index += 1
         
@@ -154,14 +132,14 @@ def main(rock_cant, rocks, tunnel, jets):
             jet = False
             down = True
             
-            tunnel = jet_move(tunnel, jets[jet_index%len(jets)])
+            tunnel,rock_coords = jet_move(tunnel, jets[jet_index%len(jets)], rock_coords)
             
             jet_index+=1
             
         elif down:
             down = False
             
-            tunnel,bottom = fall_rock(tunnel)
+            tunnel,bottom,rock_coords = fall_rock(tunnel,rock_coords)
             
             next_rock = not bottom
             jet = bottom
@@ -176,8 +154,8 @@ rocks=[
     [[1,1],[1,1]]
 ]
 
-tunnel = [[2,2,2,2,2,2,2]]
+tunnel = []
         
 tunnel = main(2022, rocks, tunnel, jets)
 
-print(len(clean_tunnel(tunnel,True))-1)
+print(len(clean_tunnel(tunnel)))
